@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Este script genera datasets de secuencias de ADN sintéticas para entrenar y 
-evaluar modelos de Deep Learning. 
+Este script genera datasets de secuencias de ADN sintéticas.
 
 
 MODOS BÁSICOS

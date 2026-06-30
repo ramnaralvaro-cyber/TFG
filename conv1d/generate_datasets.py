@@ -46,10 +46,9 @@ import sys
 import pandas as pd
 
 # =============================================================================
-# SECCIÓN 1: GENERADORES PRIMITIVOS (Distribuciones y Patrones Fijos)
+# GENERADORES BÁSICOS
 # =============================================================================
-# Generadores utilizados para crear la 'secuencia base' o inyectar métricas 
-# de ruido primitivo (ausencia de contexto profundo).
+# Generan secuencias base o añaden ruido simple.
 
 def generate_random_sequence(length, allowed_bases=None):
     """
@@ -180,9 +179,9 @@ def generate_mutated_sequence(base_sequence, mutation_rate=0.05):
     return ''.join(s)
 
 # =============================================================================
-# SECCIÓN 2: UTILIDADES IUPAC Y LÓGICAS COMPLEJAS
+# UTILIDADES Y LÓGICAS COMPLEJAS
 # =============================================================================
-# Herramientas de manejo semántico y genético utilizadas por los modos avanzados.
+# Herramientas auxiliares y manejo IUPAC.
 
 # Acrónimos universales IUPAC para degeneración nucleotídica base múltiple
 IUPAC = {
@@ -237,9 +236,9 @@ def _safe_background(length, forbidden, max_tries=200):
 
 
 # =============================================================================
-# SECCIÓN 3: GENERADORES BATCH ORIGINALES
+# GENERADORES BATCH
 # =============================================================================
-# Funciones envolventes que iteran rutinas primarias en bulto leyendo switches dictados por args.
+# Funciones auxiliares para generar lotes de secuencias.
 
 def generate_sequences_batch(seq_type, count, length, **kwargs):
     sequences = []
@@ -265,10 +264,9 @@ def generate_sequences_batch(seq_type, count, length, **kwargs):
 
 
 # =============================================================================
-# SECCIÓN 4: GENERADORES DE DATOS COMPLEJOS Y BIOLÓGICOS (Entregables finalizados)
+# GENERADORES DE DATASETS COMPLEJOS
 # =============================================================================
-# Rutinas que engloban generación de background seguro, inserción IUPAC dependiente/dinámica,
-# aplicación fina de ruido base y empaquetamiento masivo de clases en un Pandas Dataframe ordenado.
+# Generación de secuencias con lógicas avanzadas y ensamblado en Pandas DataFrames.
 
 def generate_degenerate_motif_dataset(
         count, length, motif='ACRNAG',
@@ -435,7 +433,7 @@ def generate_combinatorial_logic_dataset(
 
 
 # =============================================================================
-# SECCIÓN 5: ENVOLTORIOS DE OPERACIONES PRIMITIVAS (Format CSV y DataFrames)
+# EXPORTACIÓN Y ENSAMBLADO
 # =============================================================================
 
 def save_sequences(sequences, output_file, format_type='csv', source_label='n1'):
@@ -500,80 +498,79 @@ def generate_combined_a_biased_gct_dataset(output_file, count=100, length=150, a
 
 
 # =============================================================================
-# SECCIÓN 6: INTERFAZ DE LÍNEA DE COMANDO (CLI / ARGPARSE)
+# INTERFAZ DE LÍNEA DE COMANDO (CLI)
 # =============================================================================
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Generador de secuencias sintéticas de nucleótidos (ADN). Permite modos biológicos y matemáticos complejos.',
-        formatter_class=argparse.RawTextHelpFormatter
+        description='Generador de secuencias sintéticas de ADN para entrenar modelos.'
     )
 
-    # ── GRUPO 1: Parámetros Globales (Básicos y Comunes en todos los modos) ──
-    group_global = parser.add_argument_group('[1] Parametros Globales', 'Afectan al tamaño, semillas y guardado de los outputs.')
-    group_global.add_argument('--length', type=int, default=150, help='Longitud de cada secuencia nucleotídica generada (default: 150).')
-    group_global.add_argument('--count', type=int, default=100, help='Cantidad de secuencias a generar por subclase (default: 100).')
-    group_global.add_argument('--output', type=str, default='output.csv', help='Archivo de output CSV derivable, p.ej. "salida.csv" (default: output.csv).')
-    group_global.add_argument('--seed', type=int, default=None, help='Semilla RNG inyectada para asegurar reproductibilidad determinista.')
-    group_global.add_argument('--source', type=str, default='n1', help='Sobreescribir etiqueta de clase custom (usado habitualmente de fallback).')
+    # Parametros Globales
+    group_global = parser.add_argument_group('Parametros Globales')
+    group_global.add_argument('--length', type=int, default=150, help='Longitud de cada secuencia generada (default: 150).')
+    group_global.add_argument('--count', type=int, default=100, help='Cantidad de secuencias por clase (default: 100).')
+    group_global.add_argument('--output', type=str, default='output.csv', help='Archivo CSV de salida (default: output.csv).')
+    group_global.add_argument('--seed', type=int, default=None, help='Semilla aleatoria.')
+    group_global.add_argument('--source', type=str, default='n1', help='Etiqueta por defecto.')
 
-    # ── GRUPO 2: Etiquetado Output del Dataset para Integración del Trainer ──
-    group_labels = parser.add_argument_group('[2] Etiquetas de Entrenamiento', 'Definen explícitamente las nomenclaturas de "source".')
-    group_labels.add_argument('--pos-label', type=str, default='n1', help="Etiqueta CSV para clase positiva (debe coincidir con el `--positive-labels`).")
-    group_labels.add_argument('--neg-label', type=str, default='ran', help="Etiqueta CSV para clase negativa (debe coincidir con `--negative-labels`).")
+    # Etiquetas
+    group_labels = parser.add_argument_group('Etiquetas de Entrenamiento')
+    group_labels.add_argument('--pos-label', type=str, default='n1', help="Etiqueta para clase positiva.")
+    group_labels.add_argument('--neg-label', type=str, default='ran', help="Etiqueta para clase negativa.")
 
-    # ── GRUPO 3: Modos Primitivos Funcionales y Atributos (Clásicos) ──
-    group_prim = parser.add_argument_group('[3] Modos Primitivos Genericos', 'Opciones binarias basadas en perfiles densos repetitivos.')
+    # Modos Basicos
+    group_prim = parser.add_argument_group('Modos Básicos')
     group_prim.add_argument('--type', choices=['random', 'pattern', 'gc_only', 'at_pattern', 'nucleosome', 'linker', 'mutated'],
-                            help='Llama e incializa a un solo generador básico primario precompilado de forma individual y bruta.')
-    group_prim.add_argument('--combined', action='store_true', help='Mezclador general: puro Random vs Secuencias ricas en AT (at_pattern).')
-    group_prim.add_argument('--combined-gc', action='store_true', help='Mezclador GC restrictivo: gc_pattern puro vs at_pattern puro.')
-    group_prim.add_argument('--gct-pattern', action='store_true', help='Despliega GCT excluyendo nucleótidos A, salvo inyectando insertos isla Poli-A.')
-    group_prim.add_argument('--combined-gct', action='store_true', help='Mezcla polarizadora de puros G/C/T neutral vs los que sí llevan Poli-A internamente.')
-    group_prim.add_argument('--homogeneous', action='store_true', help='Genera cadenas monolineales repetidas puramente, iterando una base estática constante.')
-    group_prim.add_argument('--transition', action='store_true', help='Bloques abruptos interfaciales divididos equitativamente espacialmente.')
-    group_prim.add_argument('--combined-homo-trans', action='store_true', help='Match combinado totalizador: homogénas puras vs interfaces compuestas transitorias.')
-    group_prim.add_argument('--combined-homo-one', action='store_true', help='Detector simple 1D: inyección de 1 anomalía suelta abrupta frente a secuencias isométricas.')
-    group_prim.add_argument('--combined-segmented', action='store_true', help='Cadenas segmentadas espacialmente moduladas y manipulando los cuartos de frecuencias A.')
-    group_prim.add_argument('--combined-a-biased', action='store_true', help='Mosaico estadístico probabilístico (baja densidad global vs alta abundancia basal distribuida).')
+                            help='Llama a un generador básico.')
+    group_prim.add_argument('--combined', action='store_true', help='Genera aleatorio vs at_pattern.')
+    group_prim.add_argument('--combined-gc', action='store_true', help='Genera gc_pattern vs at_pattern.')
+    group_prim.add_argument('--gct-pattern', action='store_true', help='Secuencias de G,C,T con una región Poli-A.')
+    group_prim.add_argument('--combined-gct', action='store_true', help='G,C,T puro vs G,C,T con Poli-A.')
+    group_prim.add_argument('--homogeneous', action='store_true', help='Cadenas de una sola base repetida.')
+    group_prim.add_argument('--transition', action='store_true', help='Dos bloques de bases distintas.')
+    group_prim.add_argument('--combined-homo-trans', action='store_true', help='Homogéneas vs transiciones.')
+    group_prim.add_argument('--combined-homo-one', action='store_true', help='Homogéneas vs homogéneas con 1 mutación.')
+    group_prim.add_argument('--combined-segmented', action='store_true', help='Aleatorio vs centro rico en A.')
+    group_prim.add_argument('--combined-a-biased', action='store_true', help='Baja abundancia de A vs alta abundancia de A.')
 
-    group_prim_props = parser.add_argument_group('[3.1] Modificadores de Primitivos', 'Ajustan valores exactos intrínsecos al invocarlos funcionalmente.')
-    group_prim_props.add_argument('--a_min', type=int, default=5, help='Largo mínimo contiguo Poli-A (Usado con flags combinados GCT).')
-    group_prim_props.add_argument('--a_max', type=int, default=20, help='Largo estricto máximo del tracto inserto Poli-A.')
-    group_prim_props.add_argument('--a-pct-center', type=float, default=0.55, help='Coeficiente (0 a 1) para el ruido basal sobre su segmento principal medido central.')
-    group_prim_props.add_argument('--a-ratio-low', type=float, default=0.25, help='Coef ratio de subrepresentación para `--combined-a-biased`.')
-    group_prim_props.add_argument('--a-ratio-high', type=float, default=0.75, help='Coef ratio de sobreabundancia forzado `--combined-a-biased`.')
-    group_prim_props.add_argument('--transition-point', type=int, default=None, help='Offset posicional donde la capa base es modificada por la base de transición superior.')
-    group_prim_props.add_argument('--start-base', type=str, default='A', help='Formato nucleotídico incial semillado por defecto.')
-    group_prim_props.add_argument('--end-base', type=str, default='G', help='Formatos nucleares de resolución final (como en transition).')
+    group_prim_props = parser.add_argument_group('Ajustes de Modos Básicos')
+    group_prim_props.add_argument('--a_min', type=int, default=5, help='Largo mínimo Poli-A.')
+    group_prim_props.add_argument('--a_max', type=int, default=20, help='Largo máximo Poli-A.')
+    group_prim_props.add_argument('--a-pct-center', type=float, default=0.55, help='Porcentaje de A en el centro (0 a 1).')
+    group_prim_props.add_argument('--a-ratio-low', type=float, default=0.25, help='Ratio de A bajo (0 a 1).')
+    group_prim_props.add_argument('--a-ratio-high', type=float, default=0.75, help='Ratio de A alto (0 a 1).')
+    group_prim_props.add_argument('--transition-point', type=int, default=None, help='Punto de transición (default: mitad).')
+    group_prim_props.add_argument('--start-base', type=str, default='A', help='Base inicial.')
+    group_prim_props.add_argument('--end-base', type=str, default='G', help='Base final.')
 
-    # ── GRUPO 4: Modos Complejos (Datasets Estructurales Lógicos) ──
-    group_comp = parser.add_argument_group('[4] Datasets Complejos Avanzados (--dataset_type)', 'Simulación matemática estructural y bioinformática real. Fondos seguros y lógicas determinables booleanamente.')
+    # Modos Complejos
+    group_comp = parser.add_argument_group('Modos Complejos', 'Requiere --dataset_type')
     group_comp.add_argument('--dataset_type', choices=['degenerate_motif', 'spaced_motifs', 'tandem_repeats', 'palindromic', 'combinatorial_logic'],
-                            help='Selecciona un modelador de alto nivel biológico con restricciones anti-colisión robustas garantizadas.')
-    group_comp.add_argument('--noise_level', type=float, default=0.0, help='Ruido probabilístico posterior global: muta estocásticamente reemplazos destructivos in-place.')
+                            help='Selecciona un modo complejo.')
+    group_comp.add_argument('--noise_level', type=float, default=0.0, help='Nivel de ruido posterior (mutaciones aleatorias).')
     
-    group_comp_props = parser.add_argument_group('[4.1] Atributos Logicos Restringidos')
-    group_comp_props.add_argument('--motif', type=str, default='ACRNAG', help='Secuencia raíz IUPAC nuclear evaluada primariamente.')
-    group_comp_props.add_argument('--motif_variability', type=float, default=0.0, help='Tasa subversiva específica paramutacional deformando sólo la firma extraída del motif (degenerado).')
-    group_comp_props.add_argument('--motif1', type=str, default='AAAAAAAA', help='Primer bloque base restrictivo forzado por el complejo dependiente (espaciador acoplado).')
-    group_comp_props.add_argument('--motif2', type=str, default='CCCCCCCC', help='Bloque base receptor colindante forzado vinculadamente por espaciador.')
-    group_comp_props.add_argument('--min_spacing', type=int, default=5, help='Límite de vacío biológico puente restrictivo entre motivos espaciados acoplados restrictivamente inferior.')
-    group_comp_props.add_argument('--max_spacing', type=int, default=20, help='Límite dinámico holgura vacío superior modelado algorítmicamente.')
-    group_comp_props.add_argument('--repeat_unit', type=str, default='CAG', help='Fragmento mínimo codificante unitario operado para patogenicidad por recursividad tándem subyacente.')
-    group_comp_props.add_argument('--repeat_min', type=int, default=3, help='Inferencia piso básico orgánico recurrencias expansoras sin umbrales tándem activos.')
-    group_comp_props.add_argument('--repeat_max', type=int, default=10, help='Máxima deformación y elongación de las secuencias tracto terminal en tándem.')
-    group_comp_props.add_argument('--repeat_threshold', type=int, default=6, help='Límite dictador y divisor de aguas entre patología o inofensividad sobre expansión tándems.')
-    group_comp_props.add_argument('--loop_size', type=int, default=4, help='Longitud impuesta puente enclavado para modelado biológico molecular palindrómico horquillado interno.')
-    group_comp_props.add_argument('--motif_a', type=str, default='AACGT', help='Bloque mandatorio evaluacional lógico subyacente para modelo de verificación (AND 1 exclusividad).')
-    group_comp_props.add_argument('--motif_b', type=str, default='TTGCA', help='Segundo vinculador obligatorio de comprobación AND para subsanación integral verificadora.')
-    group_comp_props.add_argument('--motif_c', type=str, default='GGCCC', help='Filtro depurador inyectado en penalidad de modelación (cláusula invalidante explícita NOT de exclusivismo lógico formal).')
+    group_comp_props = parser.add_argument_group('Ajustes de Modos Complejos')
+    group_comp_props.add_argument('--motif', type=str, default='ACRNAG', help='Motivo principal (soporta IUPAC).')
+    group_comp_props.add_argument('--motif_variability', type=float, default=0.0, help='Tasa de error en el motivo.')
+    group_comp_props.add_argument('--motif1', type=str, default='AAAAAAAA', help='Primer motivo (para spaced_motifs).')
+    group_comp_props.add_argument('--motif2', type=str, default='CCCCCCCC', help='Segundo motivo (para spaced_motifs).')
+    group_comp_props.add_argument('--min_spacing', type=int, default=5, help='Separación mínima entre motivos.')
+    group_comp_props.add_argument('--max_spacing', type=int, default=20, help='Separación máxima entre motivos.')
+    group_comp_props.add_argument('--repeat_unit', type=str, default='CAG', help='Unidad a repetir (para tandem_repeats).')
+    group_comp_props.add_argument('--repeat_min', type=int, default=3, help='Mínimo de repeticiones (negativos).')
+    group_comp_props.add_argument('--repeat_max', type=int, default=10, help='Máximo de repeticiones (positivos).')
+    group_comp_props.add_argument('--repeat_threshold', type=int, default=6, help='Umbral de repeticiones patológicas.')
+    group_comp_props.add_argument('--loop_size', type=int, default=4, help='Tamaño del bucle (para palindromic).')
+    group_comp_props.add_argument('--motif_a', type=str, default='AACGT', help='Motivo A (para combinatorial_logic).')
+    group_comp_props.add_argument('--motif_b', type=str, default='TTGCA', help='Motivo B (para combinatorial_logic).')
+    group_comp_props.add_argument('--motif_c', type=str, default='GGCCC', help='Motivo C, prohibido (para combinatorial_logic).')
 
     args = parser.parse_args()
     if args.seed is not None:
         random.seed(args.seed)
 
-    # Lógica jerárquica de resolución y derivación hacia los constructores y ejecutores internos
+    # Generación de datasets complejos
     if args.dataset_type:
         dt = args.dataset_type
         kw = dict(seed=args.seed, pos_label=args.pos_label, neg_label=args.neg_label)
@@ -589,7 +586,7 @@ def main():
         print(f"✓ {len(df)} secuencias -> {args.output}  (pos={pos}, neg={neg})")
         return
 
-    # Fallback descendiente por condicionales escaleriformes para Primitivos Originales clásicos legibles
+    # Generación de datasets básicos
     if args.homogeneous: save_sequences(generate_sequences_batch('homogeneous', args.count, args.length, base=args.start_base), args.output, source_label='homogeneous')
     elif args.transition: save_sequences(generate_sequences_batch('transition', args.count, args.length, start_base=args.start_base, end_base=args.end_base, transition_point=args.transition_point), args.output, source_label='transition')
     elif args.combined_homo_trans:

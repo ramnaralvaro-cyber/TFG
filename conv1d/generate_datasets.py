@@ -448,53 +448,15 @@ def save_sequences(sequences, output_file, format_type='csv', source_label='n1')
             for seq in sequences: f.write(f"{seq}\n")
     print(f"✓ {len(sequences)} secuencias guardadas en {output_file}")
 
-def generate_combined_dataset(output_file, count=100, length=150, at_ratio=0.5, seed=None):
-    if seed is not None: random.seed(seed)
-    a, b = generate_sequences_batch('at_pattern', count, length, at_ratio=at_ratio), generate_sequences_batch('random', count, length)
-    df = pd.DataFrame({'seq': a + b, 'source': ['at_pattern'] * count + ['random'] * count})
-    df.sample(frac=1, random_state=seed or 42).reset_index(drop=True).to_csv(output_file, index=False)
-    print(f"✓ {len(df)} secuencias → {output_file}")
-
-def generate_combined_gc_dataset(output_file, count=100, length=150, at_ratio=0.5, seed=None):
-    if seed is not None: random.seed(seed)
-    a, b = generate_sequences_batch('at_pattern', count, length, at_ratio=at_ratio), generate_sequences_batch('gc_only', count, length)
-    df = pd.DataFrame({'seq': a + b, 'source': ['at_pattern'] * count + ['gc_pattern'] * count})
-    df.sample(frac=1, random_state=seed or 42).reset_index(drop=True).to_csv(output_file, index=False)
-    print(f"✓ {len(df)} secuencias → {output_file}")
-
-def generate_gct_pattern_dataset(output_file, count=100, length=150, a_min=5, a_max=20, seed=None):
-    if seed is not None: random.seed(seed)
-    seqs = generate_sequences_batch('gct_with_a', count, length, a_min=a_min, a_max=a_max)
-    pd.DataFrame({'seq': seqs, 'source': ['gct_with_a'] * count}).to_csv(output_file, index=False)
-    print(f"✓ {len(seqs)} secuencias → {output_file}")
-
-def generate_combined_gct_random_dataset(output_file, count=100, length=150, a_min=5, a_max=20, seed=None):
-    if seed is not None: random.seed(seed)
-    a, b = generate_sequences_batch('gct_with_a', count, length, a_min=a_min, a_max=a_max), generate_sequences_batch('gct_only', count, length)
-    df = pd.DataFrame({'seq': a + b, 'source': ['gct_with_a'] * count + ['gct_only'] * count})
-    df.sample(frac=1, random_state=seed or 42).reset_index(drop=True).to_csv(output_file, index=False)
-    print(f"✓ {len(df)} secuencias → {output_file}")
-
-def generate_combined_homogeneous_one_dataset(output_file, count=100, length=150, position=None, seed=None):
-    if seed is not None: random.seed(seed)
-    a, b = generate_sequences_batch('homogeneous', count, length, base='A'), generate_sequences_one(length, count, position)
-    df = pd.DataFrame({'seq': a + b, 'source': ['homogeneous'] * count + ['one_letter'] * count})
-    df.sample(frac=1, random_state=seed or 42).reset_index(drop=True).to_csv(output_file, index=False)
-    print(f"✓ {len(df)} secuencias → {output_file}")
-
-def generate_combined_segmented_dataset(output_file, count=100, length=150, a_pct_center=0.55, seed=None):
-    if seed is not None: random.seed(seed)
-    a, b = generate_sequences_batch('uniform_acgt', count, length), generate_sequences_batch('segmented_a', count, length, a_pct_center=a_pct_center)
-    df = pd.DataFrame({'seq': a + b, 'source': ['uniform_acgt'] * count + ['segmented_a'] * count})
-    df.sample(frac=1, random_state=seed or 42).reset_index(drop=True).to_csv(output_file, index=False)
-    print(f"✓ {len(df)} secuencias → {output_file}")
-
-def generate_combined_a_biased_gct_dataset(output_file, count=100, length=150, a_ratio_low=0.25, a_ratio_high=0.75, seed=None):
-    if seed is not None: random.seed(seed)
-    a, b = generate_sequences_batch('a_low_gct', count, length, a_ratio_low=a_ratio_low), generate_sequences_batch('a_high_gct', count, length, a_ratio_high=a_ratio_high)
-    df = pd.DataFrame({'seq': a + b, 'source': ['a_low_gct'] * count + ['a_high_gct'] * count})
-    df.sample(frac=1, random_state=seed or 42).reset_index(drop=True).to_csv(output_file, index=False)
-    print(f"✓ {len(df)} secuencias → {output_file}")
+def save_mixed_dataset(output_file, seqs1, label1, seqs2, label2, seed=None):
+    """Combina dos listas de secuencias, las mezcla aleatoriamente y las guarda en CSV."""
+    df = pd.DataFrame({
+        'seq': seqs1 + seqs2,
+        'source': [label1] * len(seqs1) + [label2] * len(seqs2)
+    })
+    df = df.sample(frac=1, random_state=seed or 42).reset_index(drop=True)
+    df.to_csv(output_file, index=False)
+    print(f"✓ {len(df)} secuencias guardadas en {output_file}")
 
 
 # =============================================================================
@@ -587,21 +549,58 @@ def main():
         return
 
     # Generación de datasets básicos
-    if args.homogeneous: save_sequences(generate_sequences_batch('homogeneous', args.count, args.length, base=args.start_base), args.output, source_label='homogeneous')
-    elif args.transition: save_sequences(generate_sequences_batch('transition', args.count, args.length, start_base=args.start_base, end_base=args.end_base, transition_point=args.transition_point), args.output, source_label='transition')
+    c, l, s = args.count, args.length, args.seed
+    
+    if args.homogeneous:
+        save_sequences(generate_sequences_batch('homogeneous', c, l, base=args.start_base), args.output, source_label='homogeneous')
+    
+    elif args.transition:
+        save_sequences(generate_sequences_batch('transition', c, l, start_base=args.start_base, end_base=args.end_base, transition_point=args.transition_point), args.output, source_label='transition')
+    
     elif args.combined_homo_trans:
-        h, t = generate_sequences_batch('homogeneous', args.count, args.length, base='A'), generate_sequences_batch('transition', args.count, args.length, start_base='A', end_base='G', transition_point=args.length // 2)
-        pd.DataFrame({'seq': h+t, 'source': ['homogeneous']*args.count + ['transition']*args.count}).sample(frac=1, random_state=args.seed or 42).reset_index(drop=True).to_csv(args.output, index=False)
-        print(f"✓ {args.count * 2} secuencias -> {args.output}")
-    elif args.gct_pattern: generate_gct_pattern_dataset(args.output, args.count, args.length, args.a_min, args.a_max, args.seed)
-    elif args.combined_gct: generate_combined_gct_random_dataset(args.output, args.count, args.length, args.a_min, args.a_max, args.seed)
-    elif args.combined: generate_combined_dataset(args.output, args.count, args.length, seed=args.seed)
-    elif args.combined_gc: generate_combined_gc_dataset(args.output, args.count, args.length, seed=args.seed)
-    elif args.combined_homo_one: generate_combined_homogeneous_one_dataset(args.output, args.count, args.length, position=None, seed=args.seed)
-    elif args.combined_segmented: generate_combined_segmented_dataset(args.output, args.count, args.length, a_pct_center=args.a_pct_center, seed=args.seed)
-    elif args.combined_a_biased: generate_combined_a_biased_gct_dataset(args.output, args.count, args.length, a_ratio_low=args.a_ratio_low, a_ratio_high=args.a_ratio_high, seed=args.seed)
-    elif args.type: save_sequences(generate_sequences_batch(args.type, args.count, args.length), args.output, source_label=args.source)
-    else: parser.print_help()
+        h = generate_sequences_batch('homogeneous', c, l, base='A')
+        t = generate_sequences_batch('transition', c, l, start_base='A', end_base='G', transition_point=l // 2)
+        save_mixed_dataset(args.output, h, 'homogeneous', t, 'transition', s)
+    
+    elif args.gct_pattern:
+        seqs = generate_sequences_batch('gct_with_a', c, l, a_min=args.a_min, a_max=args.a_max)
+        save_sequences(seqs, args.output, source_label='gct_with_a')
+    
+    elif args.combined_gct:
+        a = generate_sequences_batch('gct_with_a', c, l, a_min=args.a_min, a_max=args.a_max)
+        b = generate_sequences_batch('gct_only', c, l)
+        save_mixed_dataset(args.output, a, 'gct_with_a', b, 'gct_only', s)
+    
+    elif args.combined:
+        a = generate_sequences_batch('at_pattern', c, l, at_ratio=0.5)
+        b = generate_sequences_batch('random', c, l)
+        save_mixed_dataset(args.output, a, 'at_pattern', b, 'random', s)
+    
+    elif args.combined_gc:
+        a = generate_sequences_batch('at_pattern', c, l, at_ratio=0.5)
+        b = generate_sequences_batch('gc_only', c, l)
+        save_mixed_dataset(args.output, a, 'at_pattern', b, 'gc_pattern', s)
+    
+    elif args.combined_homo_one:
+        a = generate_sequences_batch('homogeneous', c, l, base='A')
+        b = generate_sequences_one(l, c, position=None)
+        save_mixed_dataset(args.output, a, 'homogeneous', b, 'one_letter', s)
+    
+    elif args.combined_segmented:
+        a = generate_sequences_batch('uniform_acgt', c, l)
+        b = generate_sequences_batch('segmented_a', c, l, a_pct_center=args.a_pct_center)
+        save_mixed_dataset(args.output, a, 'uniform_acgt', b, 'segmented_a', s)
+    
+    elif args.combined_a_biased:
+        a = generate_sequences_batch('a_low_gct', c, l, a_ratio_low=args.a_ratio_low)
+        b = generate_sequences_batch('a_high_gct', c, l, a_ratio_high=args.a_ratio_high)
+        save_mixed_dataset(args.output, a, 'a_low_gct', b, 'a_high_gct', s)
+    
+    elif args.type:
+        save_sequences(generate_sequences_batch(args.type, c, l), args.output, source_label=args.source)
+    
+    else:
+        parser.print_help()
 
 if __name__ == '__main__':
     main()

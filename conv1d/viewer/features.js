@@ -5,7 +5,7 @@
 const BASES = ['A', 'C', 'G', 'T'];
 const BASE_COLORS = { A: '#2ecc71', C: '#3498db', G: '#f39c12', T: '#e74c3c' };
 
-// ── 1. Frecuencia de monómeros ───────────────────────────────
+// 1. Frecuencia de monómeros
 function calcMonomerFrequencies(seq) {
     const counts = { A: 0, C: 0, G: 0, T: 0 };
     for (let i = 0; i < seq.length; i++) {
@@ -21,7 +21,7 @@ function calcMonomerFrequencies(seq) {
     };
 }
 
-// ── 2. Clustering de letras (Coeficiente de Variación) ───────
+// 2. Clustering
 function calcLetterClustering(seq) {
     const res = { A: 0, C: 0, G: 0, T: 0 };
     BASES.forEach(nt => {
@@ -53,7 +53,7 @@ function calcLetterClustering(seq) {
     return res;
 }
 
-// ── 3. Runs y gaps ───────────────────────────────────────────
+// 3. Rachas y Huecos
 function calcRunsAndGaps(seq) {
     const res = {};
     BASES.forEach(nt => {
@@ -88,7 +88,7 @@ function calcRunsAndGaps(seq) {
     return res;
 }
 
-// ── 4. HRI (Helical Repetition Index) ────────────────────────
+// 4. HRI
 // Proporción de distancias que son múltiplo de 10
 function calcHRI(seq) {
     const res = {};
@@ -117,7 +117,7 @@ function calcHRI(seq) {
     return res;
 }
 
-// ── 5. Frecuencia de dinucleótidos ───────────────────────────
+// 5. Frecuencia de dinucleótidos
 function calcDinucleotideFrequencies(seq) {
     const counts = {};
     BASES.forEach(n1 => BASES.forEach(n2 => { counts[n1+n2] = 0; }));
@@ -132,7 +132,7 @@ function calcDinucleotideFrequencies(seq) {
     return counts;
 }
 
-// ── UI Integration ───────────────────────────────────────────
+// UI Integration
 
 function populateFeaturesSeqSelector(delayRender = false) {
     const classFilter = document.getElementById('featuresClassFilter')?.value || 'all';

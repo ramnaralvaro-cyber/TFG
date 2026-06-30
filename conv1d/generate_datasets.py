@@ -1,21 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-=============================================================================
-             🧬 GENERADOR DE SECUENCIAS SINTÉTICAS (ADN) 🧬
-=============================================================================
-
 Este script genera datasets de secuencias de ADN sintéticas para entrenar y 
-evaluar modelos de Deep Learning (como redes CNN 1D o Transformadores). 
-Permite crear secuencias con propiedades controlables: desde puro ruido 
-aleatorio hasta secuencias con motivos complejos (motifs) interactuando 
-mediante lógica (AND, OR, NOT).
+evaluar modelos de Deep Learning. 
 
------------------------------------------------------------------------------
-GUÍA DE USO RÁPIDA (COOKBOOK)
------------------------------------------------------------------------------
 
-MODOS PRIMITIVOS (Básicos)
+MODOS BÁSICOS
 Generan secuencias basadas en distribuciones de nucleótidos o patrones fijos.
 Útiles como línea base (baseline) o pruebas conceptuales simples.
 
@@ -101,7 +91,6 @@ def generate_at_pattern_sequence(length, at_ratio=0.5):
 
 def generate_gct_with_a_pattern(length, a_min=5, a_max=20):
     """
-    Suele emplearse para medir la detección de tracts (islas) Poli-A.
     Rellena la secuencia de G,C,T puras e inserta un segmento contiguo 
     compuesto puramente por Adeninas de tamaño aleatorio a_min..a_max.
     """
@@ -116,7 +105,7 @@ def generate_gct_only_pattern_sequence(length):
     return ''.join(random.choice(['G', 'C', 'T']) for _ in range(length))
 
 def generate_homogeneous_sequence(length, base='A'):
-    """Genera una iteración idéntica de la isma base (e.g. AAAAA...)."""
+    """Genera una iteración idéntica de la isma base."""
     return base * length
 
 def generate_transition_sequence(length, start_base='A', end_base='G', transition_point=None):

@@ -4,13 +4,13 @@
 // escanear 50 archivos JSON en cada carga.
 // ============================================================
 
-// ── Límites Globales de Visualización (Rendimiento) ────────────
+// Límites de visualización y rendimiento
 const MAX_DISPLAY_SEQUENCES  = 100;
 const MAX_MOTIF_CARDS        = 50;
 const MAX_CONCURRENT_FILTERS = 33;
 const MAX_ANALYSIS_FILTERS   = 100;
 
-// ── Dataset activo (leído de ?dataset=) ──────────────────────
+// Dataset activo
 const _urlParams = new URLSearchParams(window.location.search);
 let DATASET = _urlParams.get('dataset');
 
@@ -34,7 +34,7 @@ let sequenceLabels     = {};
 let availableEpochs    = [];
 let loadedEpochs       = {};
 
-// ── Event listeners ───────────────────────────────────────────
+// Event listeners y render inicial
 function setupEventListeners() {
     // Heatmap / Main UI
     document.getElementById('vizMode')?.addEventListener('change', handleModeChange);
@@ -122,7 +122,7 @@ function setupEventListeners() {
     if (typeof renderIntroPage === 'function') renderIntroPage();
 }
 
-// ── Dataset system ────────────────────────────────────────────
+// Dataset system
 function switchDataset(name) {
     if (!name) return;
     const url = new URL(window.location.href);
@@ -168,7 +168,7 @@ async function populateDatasetSelector() {
     return manifest;
 }
 
-// ── Inicialización ─────────────────────────────────────────────
+// Inicialización
 async function initializeApp() {
     setupEventListeners();
     handleModeChange();
@@ -231,7 +231,7 @@ async function initializeApp() {
     await detectAvailableEpochs(manifest);
 }
 
-// ── Detección de épocas ────────────────────────────────────────
+// Detección de epocas
 // Prioridad:
 //   1. DATA_PATH/manifest.json  → { epochs: [1, 5, 10, ...] }
 //   2. datasets.json            → { datasets: { nombre: { epochs: [...] } } }
@@ -307,7 +307,7 @@ async function detectAvailableEpochs(globalManifest) {
     if (typeof renderAnalysis === 'function') renderAnalysis();
 }
 
-// ── Cargar primera época ───────────────────────────────────────
+// Cargar primera época 
 async function loadFirstEpoch() {
     const { filename } = availableEpochs[0];
     try {
@@ -326,7 +326,7 @@ async function loadFirstEpoch() {
     }
 }
 
-// ── Poblar selectores de época ─────────────────────────────────
+// Poblar selector de épocas disponibles
 function populateEpochSelect() {
     ['epochSelectSingle', 'epochSelectAllFilters'].forEach(id => {
         const sel = document.getElementById(id);
@@ -345,7 +345,7 @@ function populateEpochSelect() {
     populateEpochSelectCompareSeqs();
 }
 
-// ── Poblar selector de secuencias ──────────────────────────────
+// Poblar selector de secuencias
 function populateSequenceSelector() {
     const seqSelect   = document.getElementById('seqSelect');
     const classFilter = document.getElementById('heatmapClassFilter').value;
@@ -380,7 +380,7 @@ function populateSequenceSelector() {
     }
 }
 
-// ── Actualizar capas disponibles ───────────────────────────────
+// Actualizar capa y renderizar visualización
 function updateLayerAndDisplay() {
     const seqId    = document.getElementById('seqSelect')?.value;
     if (!seqId || !currentData) {
@@ -399,7 +399,7 @@ function updateLayerAndDisplay() {
     }
 }
 
-// ── Actualizar overlay de filtros ──────────────────────────────
+// Actualizar overlay de filtros 
 function updateFilterSelectors() {
     const layerName = 'conv1d_1';
     if (!layerName || !currentData) { disableAllFilterSelectors(); return; }
@@ -425,7 +425,7 @@ function disableAllFilterSelectors() {
         + 'Selecciona una capa para ver los filtros disponibles.</span>';
 }
 
-// ── Grid global de filtros overlay ─────────────────────────────
+// Grid global de filtros
 function populateFilterOverlayGrid(filterIds) {
     const grid = document.getElementById('filterOverlayGrid');
     if (!grid) return;
@@ -491,7 +491,7 @@ function clearAllOverlayFilters() {
     renderVisualization();
 }
 
-// ── Selector de época para modo comparefilters ─────────────────
+// Selector de épocas para comparación de secuencias
 function populateCompareSequencesFilters(layerName) {
     populateEpochSelectCompareSeqs();
 }
@@ -511,7 +511,7 @@ function populateEpochSelectCompareSeqs() {
     }
 }
 
-// ── Cambiar modo ───────────────────────────────────────────────
+// Cambiar modo
 function handleModeChange() {
     const mode      = document.getElementById('vizMode')?.value;
     const layerName = 'conv1d_1';
@@ -536,7 +536,7 @@ function handleModeChange() {
     renderVisualization();
 }
 
-// ── Cargar época con caché ─────────────────────────────────────
+// Cargar época 
 async function ensureEpochLoaded(filename) {
     if (loadedEpochs[filename]) return loadedEpochs[filename];
     try {
@@ -552,7 +552,7 @@ async function ensureEpochLoaded(filename) {
     return null;
 }
 
-// ── Utilidades ─────────────────────────────────────────────────
+// Utilidades
 function updateContextInfo(info) {
     const box = document.getElementById('infoBox');
     const ctx = document.getElementById('contextInfo');
@@ -580,7 +580,7 @@ function showMessage(msg, type) {
 }
 
 
-// ── Bridge de compatibilidad con llamadas directas ───────────
+// Bridge de compatibilidad
 // Llamado desde botones inline de filter_analysis.js
 function navigateToHeatmap(filterId, classFilter, epochFile) {
   navigateTo('heatmap', {

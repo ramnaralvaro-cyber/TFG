@@ -4,7 +4,7 @@
 // a todos los modos de visualización existentes.
 // ============================================================
 
-// ── Colormaps ────────────────────────────────────────────────
+// Colormaps
 const COLORMAPS = {
   red:   [[255,255,255],[255,179,179],[255,102,102],[255,0,0],[128,0,0]],
   green: [[255,255,255],[182,242,182],[ 76,175, 80],[ 27,94, 32]],
@@ -36,10 +36,10 @@ function perceivedBrightness(r, g, b) {
   return (0.299*r + 0.587*g + 0.114*b) / 255;
 }
 
-// ── Escala de color por filtro (Tableau-10, singleton) ───────
+// Escala de color por filtro
 const FILTER_COLORS = d3.scaleOrdinal(d3.schemeTableau10);
 
-// ── Lectura del estado global de filtros ─────────────────────
+// Lectura del estado de filtros activos y método de combinación
 function getActiveFilters() {
   return Array.from(
     document.querySelectorAll('#filterOverlayGrid input[type=checkbox]:checked')
@@ -49,7 +49,7 @@ function getCombineMethod() {
   return document.getElementById('filterCombineMethod')?.value || 'sum';
 }
 
-// ── Cálculo de activaciones ──────────────────────────────────
+// Calculo de activaciones
 // Un filtro → devuelve {combined, perFilter} con el mismo shape
 // N filtros → combina según method (sum | max | mean)
 function calculateActivationsForFilter(seqId, layerName, filterId, epochData) {
@@ -96,7 +96,7 @@ function calculateMultiFilterActivations(seqId, layerName, filterIds, epochData,
   return { combined, perFilter };
 }
 
-// ── Constructor de fila de datos ─────────────────────────────
+// Constructor fildas de datos
 // Devuelve la estructura estándar que consume renderD3Heatmap.
 // Un filtro → tooltip simple; varios → tooltip con breakdown.
 function buildActivationRow(label, seqId, layerName, epochData, selectedFilters, method) {
@@ -120,7 +120,7 @@ function buildActivationRow(label, seqId, layerName, epochData, selectedFilters,
            selectedFilters, method };
 }
 
-// ── Tooltip dinámico ─────────────────────────────────────────
+// Tooltip dinámico
 function buildHeatmapTooltip(base, pi, act, row) {
   const { perFilter, selectedFilters, method, seqLabel } = row;
   const header = `<strong>${base}</strong> <span class="tip-pos">pos: ${pi}</span>`;
@@ -154,7 +154,7 @@ function buildHeatmapTooltip(base, pi, act, row) {
     <div class="tip-contribs">${bars}</div>`;
 }
 
-// ── Renderizador D3 principal ────────────────────────────────
+// Renderizado D3.js
 const D3_CELL_W  = 8;
 const D3_CELL_H  = 20;
 const D3_ROW_GAP = 2;
@@ -397,7 +397,7 @@ function renderVisualization() {
   else if (mode === 'allfiltersseq') renderAllFiltersForSeqMode(seqId, layerName, seqOriginal, selectedFilters);
 }
 
-// ── Modo 1: secuencia única, filtros overlay ─────────────────
+// Modo 1: una secuencia, filtros overlay
 async function renderSingleFilterMode(seqId, layerName, seqOriginal, selectedFilters) {
   const epochFile = document.getElementById('epochSelectSingle').value;
   if (!epochFile) return;
@@ -420,7 +420,7 @@ async function renderSingleFilterMode(seqId, layerName, seqOriginal, selectedFil
   );
 }
 
-// ── Modo 2: todas las secuencias, filtros overlay ────────────
+// Modo 2: todas las secuencias, filtros overlay
 async function renderCompareFiltersMode(layerName, selectedFilters) {
   const epochFile = document.getElementById('epochSelectCompareSeqs').value;
   if (!epochFile) return;
@@ -471,7 +471,7 @@ async function renderCompareFiltersMode(layerName, selectedFilters) {
 }
 
 
-// ── Modo 3: todas las épocas, filtros overlay ────────────────
+// Modo 3: todas las épocas, filtros overlay
 async function renderCompareEpochsMode(seqId, layerName, seqOriginal, selectedFilters) {
   const method     = getCombineMethod();
   const loadedData = [];
@@ -496,7 +496,7 @@ async function renderCompareEpochsMode(seqId, layerName, seqOriginal, selectedFi
   );
 }
 
-// ── Modo 4: filtros seleccionados como filas individuales ─────
+// Modo 4: todas las secuencias, todos los filtros, modo overlay
 // Cada filtro activo = 1 fila, activaciones individuales (no combinadas)
 async function renderAllFiltersForSeqMode(seqId, layerName, seqOriginal, selectedFilters) {
   const epochFile = document.getElementById('epochSelectAllFilters').value;
@@ -515,7 +515,7 @@ async function renderAllFiltersForSeqMode(seqId, layerName, seqOriginal, selecte
   );
 }
 
-// ── Input vector table (conv1d_2, modo 1) ────────────────────
+// Input vector table (solo para conv1d_2)
 function renderInputVectorTable(seqId, layerName, filterId, epochData) {
   const container = document.getElementById('inputVectorContainer');
   const content   = document.getElementById('inputVectorContent');
@@ -551,7 +551,7 @@ function renderInputVectorTable(seqId, layerName, filterId, epochData) {
   container.style.display = 'block';
 }
 
-// ── Compatibilidad ──
+// Compatibilidad
 
 function buildHeatmapTable(col1Header, rowsHtml) {
     return `<table style="border-collapse:collapse;width:100%;">

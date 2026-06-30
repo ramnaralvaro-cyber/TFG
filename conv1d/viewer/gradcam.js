@@ -3,7 +3,7 @@
 // Formato: epochData.gradcam[layerName][classKey][seqIdx] = [float × seq_len]
 // ============================================================
 
-// ── Tabla de filtros relevantes (αk) ──────────────────────────
+// Tabla de filtros relevantes
 function renderGradCAMFilterTable(epochData, layerName, classKey) {
   const content  = document.getElementById('gradcamFilterTable');
   const rankData = epochData.gradcam_filters?.[layerName]?.[classKey];
@@ -39,7 +39,7 @@ function renderGradCAMFilterTable(epochData, layerName, classKey) {
   content.innerHTML = html;
 }
 
-// ── Render principal ──────────────────────────────────────────
+// Render principal
 async function renderGradCAM() {
   const content   = document.getElementById('gradcamContent');
   const epochFile = document.getElementById('gradcamEpochSelect')?.value;
@@ -123,7 +123,7 @@ async function renderGradCAM() {
   renderGradCAMFilterTable(epochData, layerName, classKey);
 }
 
-// ── Poblar selector de época ──────────────────────────────────
+// Poblar selector de épocas disponibles 
 function populateGradCAMEpochSelect() {
   const sel = document.getElementById('gradcamEpochSelect');
   if (!sel) return;

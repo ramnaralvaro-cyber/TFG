@@ -114,8 +114,8 @@ function applyMotifThreshold() {
         .join('');
 }
 
-// ── Destacar cards al llegar desde el Heatmap ───────────────
-// No consume _pendingHeatmapNavigation hasta que los datos son correctos.
+// Destacar cartas de motif según filtros seleccionados en Heatmap
+// No consume _pendingHeatmapNavigation hasta que los datos son correctos
 function applyMotifHighlight() {
     const nav = window._pendingHeatmapNavigation;
     if (!nav) return;

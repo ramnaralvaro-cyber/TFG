@@ -6,7 +6,7 @@
 let _limeEpochCache = {};      // { filename: data }
 let _limeAvailable  = [];      // [ { epoch, filename } ]
 
-// ── Detectar archivos LIME disponibles ───────────────────────
+// Detectar archivos LIME disponibles (
 async function detectLimeEpochs() {
     _limeAvailable = [];
     const checks = [];
@@ -23,7 +23,7 @@ async function detectLimeEpochs() {
     return _limeAvailable;
 }
 
-// ── Poblar selectores de la sección LIME ────────────────────
+// Poblar selectores de época y secuencia
 async function populateLimeSelectors(knownLimeEpochs) {
     // Si manifest.json ya reportó las épocas LIME, usarlas directamente
     if (Array.isArray(knownLimeEpochs) && knownLimeEpochs.length) {
@@ -101,7 +101,7 @@ async function _loadLimeEpoch(filename) {
     }
 }
 
-// ── Renderizar explicación LIME ──────────────────────────────
+// Renderizar explicación LIME 
 async function renderLime() {
     const content   = document.getElementById('limeContent');
     const epochFile = document.getElementById('limeEpochSelect')?.value;
@@ -125,17 +125,17 @@ async function renderLime() {
 
     content.innerHTML = '';
 
-    // ── Panel superior: predicción + metadatos ────────────────
+    // Panel superior con predicción y metadatos
     _renderLimePredictionPanel(content, seqData, seqId, data.epoch);
 
-    // ── Mapa de importancia por posición (D3) ─────────────────
+    // Mapa de importancia por posición (D3)
     _renderLimePositionMap(content, seqData, seqId);
 
-    // ── Gráfico de barras de segmentos (D3) ───────────────────
+    // Gráfico de barras por segmento (D3)
     _renderLimeSegmentBars(content, seqData);
 }
 
-// ── Panel de predicción ──────────────────────────────────────
+// Panel de predicción y metadatos de la secuencia
 function _renderLimePredictionPanel(container, d, seqId, epoch) {
     const pred = d.original_prediction;
     const pNuc = (pred.nucleosome * 100).toFixed(1);
@@ -198,7 +198,7 @@ function _renderLimePredictionPanel(container, d, seqId, epoch) {
     container.appendChild(panel);
 }
 
-// ── Mapa de importancia por posición ─────────────────────────
+// Mapa de importancia por posición (D3)
 function _renderLimePositionMap(container, d, seqId) {
     const CW = 8, CH = 20, ML = 125, MR = 16, MT = 18, MB = 8;
     const seq    = d.seq_original;
@@ -325,7 +325,7 @@ function _renderLimePositionMap(container, d, seqId) {
     });
 }
 
-// ── Gráfico de barras por segmento ───────────────────────────
+// Gráfico de barras por segmento (D3)
 function _renderLimeSegmentBars(container, d) {
     const weights  = d.segment_weights;
     const K        = weights.length;

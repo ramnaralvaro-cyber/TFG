@@ -50,8 +50,8 @@ function getCombineMethod() {
 }
 
 // Calculo de activaciones
-// Un filtro → devuelve {combined, perFilter} con el mismo shape
-// N filtros → combina según method (sum | max | mean)
+// Un filtro  devuelve {combined, perFilter} con el mismo shape
+// N filtros  combina según method (sum | max | mean)
 function calculateActivationsForFilter(seqId, layerName, filterId, epochData) {
   const seqOriginal = sequenceMap[parseInt(seqId)];
   if (!seqOriginal) return null;
@@ -98,7 +98,7 @@ function calculateMultiFilterActivations(seqId, layerName, filterIds, epochData,
 
 // Constructor fildas de datos
 // Devuelve la estructura estándar que consume renderD3Heatmap.
-// Un filtro → tooltip simple; varios → tooltip con breakdown.
+// Un filtro  tooltip simple; varios  tooltip con breakdown.
 function buildActivationRow(label, seqId, layerName, epochData, selectedFilters, method) {
   const seqOriginal = sequenceMap[parseInt(seqId)];
   const seqLabel    = sequenceLabels[parseInt(seqId)];

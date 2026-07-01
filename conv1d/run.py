@@ -17,8 +17,8 @@ INPUT_FILE         = "./datasets/dataset_nuc_shu_pos.csv"   # ruta al dataset
 FORMAT             = "auto"       # auto | parquet | csv | fasta
 SEQ_COLUMN         = "seq"        # columna con la secuencia ADN
 LABEL_COLUMN       = "source"     # columna con las etiquetas
-POSITIVE_LABELS    = ["nuc"]      # etiquetas → clase 0 (Nucleosome)
-NEGATIVE_LABELS    = ["shu"]      # etiquetas → clase 1 (Non-Nucleosome)
+POSITIVE_LABELS    = ["nuc"]      # etiquetas  clase 0 (Nucleosome)
+NEGATIVE_LABELS    = ["shu"]      # etiquetas  clase 1 (Non-Nucleosome)
 
 OUTPUT_DIR         = "output_model/dataset_nuc_shu_pos"  # directorio de salida
 

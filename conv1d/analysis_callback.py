@@ -5,8 +5,8 @@ analysis_callback.py — Callback XAI.
 
 Genera UN JSON por época: activations_{split}_epoch_{N}.json
 Estructura ORIGINAL compatible con todos los JS del visor:
-  layers → conv1d_1, conv1d_2, dense_128, dense_output
-           con filters → sequences → fragments / activations
+  layers  conv1d_1, conv1d_2, dense_128, dense_output
+           con filters  sequences  fragments / activations
   motifs, filter_importance, gradcam, gradcam_filters, conv1d2_contributions
 """
 
@@ -198,7 +198,7 @@ class DetailedFilterAnalysisCallback(keras.callbacks.Callback):
                     for k in np.argsort(alpha)[::-1]]
         return gcam, ranking
 
-    # Contribuciones conv1d_1 → conv1d_2
+    # Contribuciones conv1d_1  conv1d_2
 
     def _contributions(self, acts1, acts2, top_k=5):
         N, L1, F1 = acts1.shape
@@ -363,7 +363,7 @@ class DetailedFilterAnalysisCallback(keras.callbacks.Callback):
                                 f'activations_{self.datasetname}_epoch_{epoch_num}.json')
         with open(out_file, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
-        print(f'  OK → {out_file}')
+        print(f'  OK  {out_file}')
 
         # LIME 
         lime_saved = False
@@ -374,7 +374,7 @@ class DetailedFilterAnalysisCallback(keras.callbacks.Callback):
                                      f'lime_{self.datasetname}_epoch_{epoch_num}.json')
             with open(lime_file, 'w', encoding='utf-8') as f:
                 json.dump(lime_data, f, ensure_ascii=False, indent=2)
-            print(f'  OK LIME → {lime_file}')
+            print(f'  OK LIME  {lime_file}')
             lime_saved = True
 
         # Manifest 

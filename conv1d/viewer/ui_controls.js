@@ -233,8 +233,8 @@ async function initializeApp() {
 
 // Detección de epocas
 // Prioridad:
-//   1. DATA_PATH/manifest.json  → { epochs: [1, 5, 10, ...] }
-//   2. datasets.json            → { datasets: { nombre: { epochs: [...] } } }
+//   1. DATA_PATH/manifest.json   { epochs: [1, 5, 10, ...] }
+//   2. datasets.json             { datasets: { nombre: { epochs: [...] } } }
 //   3. Fallback: escaneo de 50 archivos por HEAD (lento)
 async function detectAvailableEpochs(globalManifest) {
     let epochList   = null;

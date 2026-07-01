@@ -699,7 +699,7 @@ body {
 .intro-concept-term { font-size: 12px; font-weight: 700; color: #0d6efd; }
 .intro-concept-def  { font-size: 11px; color: #555; line-height: 1.5; }
 
-/* ── Barra de navegación Heatmap → otras secciones ─── */
+/* ── Barra de navegación Heatmap  otras secciones ─── */
 .heatmap-nav-bar {
     display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
     background: #f0f4ff; border: 1px solid #c5d5f8; border-radius: 6px;

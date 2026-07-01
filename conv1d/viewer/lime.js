@@ -273,13 +273,13 @@ function _renderLimePositionMap(container, d, seqId) {
         const norm = w / maxAbs;  // [-1, 1]
         let r, gv, b;
         if (norm > 0) {
-            // verde: positivo → nucleosoma
+            // verde: positivo  nucleosoma
             const t = norm;
             r = Math.round(39 + (255 - 39) * (1 - t));
             gv = Math.round(174 + (255 - 174) * (1 - t));
             b = Math.round(96 + (255 - 96) * (1 - t));
         } else {
-            // rojo: negativo → no-nucleosoma
+            // rojo: negativo  no-nucleosoma
             const t = -norm;
             r = Math.round(231 + (255 - 231) * (1 - t));
             gv = Math.round(76 + (255 - 76) * (1 - t));

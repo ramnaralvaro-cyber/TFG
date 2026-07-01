@@ -68,4 +68,4 @@ def update_datasets_manifest(output_dir, dataset_label):
 
     manifest['datasets'] = datasets
     _write_manifest(manifest_path, manifest)
-    print(f'OK datasets.json actualizado → {manifest_path}')
+    print(f'OK datasets.json actualizado  {manifest_path}')

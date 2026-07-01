@@ -56,10 +56,10 @@ def evaluate_model(model, test_data):
     # MATRIZ DE CONFUSIÓN (binaria)
     # -----------------------------
     # Definimos:
-    # tp (True Positives): pred=0 y true=0  → nucleosoma bien clasificado
-    # tn (True Negatives): pred=1 y true=1  → no-nucleosoma bien clasificado
-    # fp (False Positives): pred=0 pero true=1 → falso nucleosoma
-    # fn (False Negatives): pred=1 pero true=0 → nucleosoma perdido
+    # tp (True Positives): pred=0 y true=0   nucleosoma bien clasificado
+    # tn (True Negatives): pred=1 y true=1   no-nucleosoma bien clasificado
+    # fp (False Positives): pred=0 pero true=1  falso nucleosoma
+    # fn (False Negatives): pred=1 pero true=0  nucleosoma perdido
 
     tp = ((pred == 0) & (true == 0)).sum()
     tn = ((pred == 1) & (true == 1)).sum()
@@ -70,22 +70,22 @@ def evaluate_model(model, test_data):
     # MÉTRICAS PARA NUCLEOSOMAS (clase 0)
     # -----------------------------
     # Precision = TP / (TP + FP)
-    # → de los que predigo como nucleosoma, cuántos lo son realmente
+    #  de los que predigo como nucleosoma, cuántos lo son realmente
     precision_nuc = tp / (tp + fp) if (tp + fp) > 0 else 0.0
 
     # Recall = TP / (TP + FN)
-    # → de los nucleosomas reales, cuántos detecto
+    #  de los nucleosomas reales, cuántos detecto
     recall_nuc = tp / (tp + fn) if (tp + fn) > 0 else 0.0
 
     # -----------------------------
     # MÉTRICAS PARA NO-NUCLEOSOMAS (clase 1)
     # -----------------------------
     # Precision = TN / (TN + FN)
-    # → de los que predigo como no-nucleosoma, cuántos lo son realmente
+    #  de los que predigo como no-nucleosoma, cuántos lo son realmente
     precision_non = tn / (tn + fn) if (tn + fn) > 0 else 0.0
 
     # Recall = TN / (TN + FP)
-    # → de los no-nucleosomas reales, cuántos detecto
+    #  de los no-nucleosomas reales, cuántos detecto
     recall_non = tn / (tn + fp) if (tn + fp) > 0 else 0.0
 
     # -----------------------------

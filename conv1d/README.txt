@@ -22,7 +22,7 @@ Se recomienda utilizar una versión de Python compatible con TensorFlow y Keras.
 
 Instalar las dependencias principales:
 
-```bash
+```
 pip install tensorflow pandas scikit-learn
 ```
 
@@ -63,7 +63,7 @@ Una vez generados los resultados, el visualizador permite explorar de forma inte
 
 Para ejecutarlo basta con situarse en la carpeta `viewer` y lanzar un servidor web local:
 
-```bash
+```
 python -m http.server
 ```
 
